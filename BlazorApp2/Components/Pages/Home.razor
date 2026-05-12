@@ -1,0 +1,56 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<fluent-anchor-button href="/counter" tabindex="0">
+    Anchor Button
+    <a inert href="/counter"></a>
+</fluent-anchor-button>
+
+<a href="/counter" tabindex="0">
+    HTML Anchor
+</a>
+
+<NavLink href="/counter">
+    Blazor NavLink
+</NavLink>
+
+<EditForm Model="Input" OnValidSubmit="OnValidSubmitAsync">
+    <input type="text" value="@Input.Text" @onchange="ChangeHandlerAsync" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+<p>
+    Text2: @Input.Text
+</p>
+@code {
+
+    public MyInput Input { get; set; } = new();
+
+
+    private Task OnValidSubmitAsync()
+    {
+        Console.WriteLine("Input Text: {0}", Input.Text);
+        return Task.CompletedTask;
+    }
+
+    protected virtual async Task ChangeHandlerAsync(ChangeEventArgs e)
+    {
+        Input.Text = e.Value?.ToString();
+    }
+
+    Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        Console.WriteLine("OnBeforeInternalNavigation triggered");
+        context.PreventNavigation();
+        return Task.CompletedTask;
+    }
+
+
+    public class MyInput
+    {
+        public string? Text { get; set; }
+    }
+}
